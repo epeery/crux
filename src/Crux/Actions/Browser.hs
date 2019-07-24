@@ -3,16 +3,14 @@
 
 module Crux.Actions.Browser where
 
-import           Control.Applicative ( (<|>), liftA2 )
-
 import           Crux.Actions.Utils
 import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 
 import           Data.Maybe
-import qualified Data.Text           as T
-import           Data.Text           ( Text )
+import qualified Data.Text          as T
+import           Data.Text          ( Text )
 import           Data.Time
 
 browserUp :: Action
