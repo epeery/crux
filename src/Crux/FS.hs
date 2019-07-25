@@ -281,9 +281,9 @@ taskUnsetDone (FS file prev)   =
         Just fs' -> pure fs'
 
 taskUnsetDone' :: File -> Maybe File
-taskUnsetDone' Empty = Nothing
-taskUnsetDone' file  = Just $ file { status   = Nothing
-                                   , priority = 0 }
+taskUnsetDone' file@Task{} = Just $ file { status   = Nothing
+                                         , priority = 0 }
+taskUnsetDone' _           = Nothing
 
 stackDeleteCurrent :: Stack -> Stack
 stackDeleteCurrent (Stack _ Empty _)     = emptyStack
