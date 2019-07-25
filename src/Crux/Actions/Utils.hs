@@ -27,6 +27,7 @@ modifyBrowserMode m =
   modify (\cs ->
           cs { cruxBrowserState = (cruxBrowserState cs) { browserMode = m } })
 
+fromMaybe :: (a -> Maybe a) -> a -> a
 fromMaybe f x = case f x of
   Nothing -> x
   Just a  -> a

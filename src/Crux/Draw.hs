@@ -3,7 +3,6 @@
 
 module Crux.Draw where
 
-import           Brick.Main           as B
 import           Brick.Types          as B
 import           Brick.Widgets.Center as B
 import           Brick.Widgets.Core   as B
@@ -12,12 +11,14 @@ import           Crux.Core
 import           Crux.Draw.Browser    ( renderBrowser )
 import           Crux.Style
 
+cruxDraw :: CruxConfig -> CruxState -> [Widget ResourceName]
 cruxDraw conf st = case cruxActiveView of
   Info    -> [ drawInfo ]
   Help    -> [ txt "TODO: Actually make a help menu" ]
   Browser -> [ renderBrowser conf cruxBrowserState ]
   where CruxState{..} = st
 
+drawInfo :: Widget n
 drawInfo = withAttr selectedAttr $ vCenterLayer $ vBox $
   map B.hCenterLayer
       [ str "CRUX v0.1.0.0"

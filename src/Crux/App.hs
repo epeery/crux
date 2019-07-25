@@ -2,21 +2,19 @@
 
 module Crux.App where
 
-import           Brick.Main           as B
-import           Brick.Types          as B
+import           Brick.Main         as B
+import           Brick.Types        as B
 
-import           Crux.Actions.Browser ( browserInsert )
-import           Crux.Actions.Utils   ( modifyActiveView )
-import           Crux.Bindings        ( eventToBinding )
+import           Crux.Actions.Utils ( modifyActiveView )
+import           Crux.Bindings      ( eventToBinding )
 import           Crux.Browser
 import           Crux.Core
 import           Crux.Draw
 import           Crux.Style
 
-import qualified Data.Map.Strict      as M
-import qualified Data.Text            as T
+import qualified Data.Map.Strict    as M
 
-import qualified Graphics.Vty         as Vty
+import qualified Graphics.Vty       as Vty
 
 type Event = BrickEvent ResourceName CruxEvent
 
@@ -28,6 +26,7 @@ cruxApp conf@CruxConfig{..} =
       , appStartEvent   = pure
       , appAttrMap      = defaultAttrMap }
 
+cruxChooseCursor :: s -> [CursorLocation n] -> Maybe (CursorLocation n)
 cruxChooseCursor = showFirstCursor
 
 cruxHandleEvent

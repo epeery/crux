@@ -2,17 +2,16 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Crux.Data.Types ( CruxFile(..), File(..), Session(..), TaskStatus(..) ) where
 
 import           Crux.FS
 
 import           Data.Aeson
-import           Data.Aeson.Encode.Pretty
-import qualified Data.Text                as T
-import           Data.Time
-import qualified Data.Vector              as Vector
+import qualified Data.Vector  as Vector
 
-import           GHC.Generics             ( Generic )
+import           GHC.Generics ( Generic )
 
 ------------------------------------------------------------------------
 --                             Datatypes                              --

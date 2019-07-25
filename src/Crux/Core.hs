@@ -16,7 +16,6 @@ import           Control.Monad.Reader
 import           Control.Monad.State
 
 import           Crux.Browser         ( BrowserState )
-import           Crux.FS
 
 import           Data.Map.Strict      ( Map )
 import           Data.String          ( IsString )
@@ -64,7 +63,6 @@ data CruxState = CruxState { cruxBrowserState :: BrowserState
   deriving ( Eq, Generic )
 
 data View = Browser
-          | Tasks
           | Help
           | Info
   deriving ( Show, Eq, Generic )

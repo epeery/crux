@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Crux.Bindings where
 
 import           Crux.Core                 ( Binding(..) )

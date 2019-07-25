@@ -40,7 +40,6 @@ module Crux.FS
 
 import           Control.Monad ( mplus )
 
-import           Data.Char     ( toLower )
 import           Data.List     ( sortOn )
 import qualified Data.Text     as T
 import           Data.Text     ( Text )
@@ -184,26 +183,25 @@ fileDelete file   = Just $
   file { contents = stackDeleteCurrent (contents file) }
 
 fsRename :: FS -> Text -> Maybe FS
-fsRename (FS Empty prev) t  = Nothing
-fsRename (FS Note{} prev) t = Nothing
-fsRename (FS file prev) t   =
-  case fileRename (stackCurrent $ contents file) t of
-    Nothing -> Nothing
-    Just f  -> do
-      let fs = FS file { contents = sortStack $
-                           (contents file) { stackCurrent = f } }
-                  prev
-      case fileSearch (name f) fs of
-        Nothing  -> pure fs
-        Just fs' -> pure fs'
+fsRename (FS Empty _) _   = Nothing
+fsRename (FS Note{} _) _  = Nothing
+fsRename (FS file prev) t = case fileRename (stackCurrent $ contents file) t of
+  Nothing -> Nothing
+  Just f  -> do
+    let fs = FS file { contents = sortStack $
+                         (contents file) { stackCurrent = f } }
+                prev
+    case fileSearch (name f) fs of
+      Nothing  -> pure fs
+      Just fs' -> pure fs'
 
 fileRename :: File -> Text -> Maybe File
 fileRename Empty _ = Nothing
 fileRename f t     = Just $ f { name = t }
 
 taskStart :: UTCTime -> FS -> Maybe FS
-taskStart _ (FS Empty prev)   = Nothing
-taskStart _ (FS Note{} prev)  = Nothing
+taskStart _ (FS Empty _)      = Nothing
+taskStart _ (FS Note{} _)     = Nothing
 taskStart time (FS file prev) =
   case taskStart' time . stackCurrent $ contents file of
     Nothing    -> Nothing
@@ -215,8 +213,8 @@ taskStart' time task@Task{} = Just $ task { status = Just $ Tracking time }
 taskStart' _ _ = Nothing
 
 taskEnd :: UTCTime -> FS -> Maybe FS
-taskEnd _ (FS Empty prev)   = Nothing
-taskEnd _ (FS Note{} prev)  = Nothing
+taskEnd _ (FS Empty _)      = Nothing
+taskEnd _ (FS Note{} _)     = Nothing
 taskEnd time (FS file prev) =
   case taskEnd' time . stackCurrent $ contents file of
     Nothing    -> Nothing
@@ -231,8 +229,8 @@ taskEnd' time task@Task{} = case status task of
 taskEnd' _ _ = Nothing
 
 setPriority :: Int -> FS -> Maybe FS
-setPriority _ (FS Empty prev) = Nothing
-setPriority n (FS file prev)  =
+setPriority _ (FS Empty _)   = Nothing
+setPriority n (FS file prev) =
   case setPriority' n . stackCurrent $ contents file of
     Nothing    -> Nothing
     Just file' -> do
@@ -244,12 +242,12 @@ setPriority n (FS file prev)  =
         Just fs' -> pure fs'
 
 setPriority' :: Int -> File -> Maybe File
-setPriority' n Empty = Nothing
+setPriority' _ Empty = Nothing
 setPriority' n file  = Just $ file { priority = n }
 
 taskSetDone :: UTCTime -> FS -> Maybe FS
-taskSetDone _ (FS Empty prev)   = Nothing
-taskSetDone _ (FS Note{} prev)  = Nothing
+taskSetDone _ (FS Empty _)      = Nothing
+taskSetDone _ (FS Note{} _)     = Nothing
 taskSetDone time (FS file prev) =
   case taskSetDone' time . stackCurrent $ contents file of
     Nothing    -> Nothing
@@ -267,9 +265,9 @@ taskSetDone' time file = Just $ file { status   = Just $ Done time
                                      , priority = 10 }
 
 taskUnsetDone :: FS -> Maybe FS
-taskUnsetDone (FS Empty prev)  = Nothing
-taskUnsetDone (FS Note{} prev) = Nothing
-taskUnsetDone (FS file prev)   =
+taskUnsetDone (FS Empty _)   = Nothing
+taskUnsetDone (FS Note{} _)  = Nothing
+taskUnsetDone (FS file prev) =
   case taskUnsetDone' . stackCurrent $ contents file of
     Nothing    -> Nothing
     Just file' -> do
@@ -287,7 +285,7 @@ taskUnsetDone' _           = Nothing
 
 stackDeleteCurrent :: Stack -> Stack
 stackDeleteCurrent (Stack _ Empty _)     = emptyStack
-stackDeleteCurrent (Stack [] c [])       = emptyStack
+stackDeleteCurrent (Stack [] _ [])       = emptyStack
 stackDeleteCurrent (Stack [] _ (d : ds)) = Stack [] d ds
 stackDeleteCurrent (Stack (u : us) _ []) = Stack us u []
 stackDeleteCurrent (Stack u _ (d : ds))  = Stack u d ds
@@ -316,8 +314,8 @@ fileSearch n (FS file prev) = case fileSearch' n file of
   Just file' -> Just $ FS file' prev
 
 fileSearch' :: Text -> File -> Maybe File
-fileSearch' n Empty = Nothing
-fileSearch' n Note{} = Nothing
+fileSearch' _ Empty = Nothing
+fileSearch' _ Note{} = Nothing
 fileSearch' n container = case stackCurrent $ contents container of
   Empty -> Nothing
   file  -> if T.toLower n `T.isInfixOf` T.toLower (name file)
@@ -339,23 +337,23 @@ emptyStack :: Stack
 emptyStack = Stack [] Empty []
 
 emptyEntry :: Text -> File
-emptyEntry name = Entry name emptyStack 0
+emptyEntry n = Entry n emptyStack 0
 
 emptyFolder :: Text -> File
-emptyFolder name = Folder name emptyStack 0
+emptyFolder n = Folder n emptyStack 0
 
 emptyTask :: Text -> File
-emptyTask name = Task { name     = name
-                      , contents = emptyStack
-                      , dueDate  = Nothing
-                      , status   = Nothing
-                      , sessions = []
-                      , priority = 0 }
+emptyTask n = Task { name     = n
+                   , contents = emptyStack
+                   , dueDate  = Nothing
+                   , status   = Nothing
+                   , sessions = []
+                   , priority = 0 }
 
 emptyFS :: Text -> FS
-emptyFS name = FS (emptyFolder name) []
+emptyFS n = FS (emptyFolder n) []
 
 emptyNote :: Text -> UTCTime -> File
-emptyNote name date = Note { name     = name
-                           , noteDate = date
-                           , priority = 0 }
+emptyNote n date = Note { name     = n
+                        , noteDate = date
+                        , priority = 0 }

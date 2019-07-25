@@ -34,13 +34,14 @@ readCruxFile = do
   p <- getCruxFilePath
   mContents <- forgivingAbsence $ BS.readFile p
   case mContents of
-    Nothing       -> pure $ Right emptyCruxFile
-    Just ""       -> pure $ Right emptyCruxFile
-    Just contents -> pure $ parseCruxFile contents
+    Nothing      -> pure $ Right emptyCruxFile
+    Just ""      -> pure $ Right emptyCruxFile
+    Just content -> pure $ parseCruxFile content
 
 parseCruxFile :: FromJSON a => ByteString -> Either String a
 parseCruxFile = eitherDecode . BL.fromStrict
 
+emptyCruxFile :: CruxFile
 emptyCruxFile = CruxFile (emptyFolder "crux")
 
 writeCruxFile :: CruxFile -> IO ()

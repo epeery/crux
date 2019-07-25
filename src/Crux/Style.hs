@@ -2,11 +2,10 @@
 
 module Crux.Style where
 
-import           Brick.AttrMap           as B
-import           Brick.Util              as B
+import           Brick.AttrMap as B
+import           Brick.Util    as B
 
-import qualified Graphics.Vty            as V
-import           Graphics.Vty.Attributes
+import qualified Graphics.Vty  as V
 
 defaultAttrMap :: s -> AttrMap
 defaultAttrMap _ =

@@ -8,7 +8,6 @@ import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 
-import           Data.Maybe
 import qualified Data.Text          as T
 import           Data.Text          ( Text )
 import           Data.Time
@@ -235,13 +234,16 @@ handleInsertEnter (BrowserInsert BISearch t) = do
 handleInsertEnter f = do
   date <- liftIO getCurrentTime
   let file = case f of
-        BrowserInsert BIFolder t -> emptyFolder t
-        BrowserInsert BIEntry t  -> emptyEntry t
-        BrowserInsert BITask t   -> emptyTask t
-        BrowserInsert BINote t   -> emptyNote t date
-  modifyBrowserCursor (\fs -> case fileSearch (name file) fs of
-                         Nothing  -> fsInsertFile file fs
-                         Just fs' -> Just fs')
+        BrowserInsert BIFolder t -> Just $ emptyFolder t
+        BrowserInsert BIEntry t -> Just $ emptyEntry t
+        BrowserInsert BITask t -> Just $ emptyTask t
+        BrowserInsert BINote t -> Just $ emptyNote t date
+        _ -> Nothing
+  case file of
+    Just file' -> modifyBrowserCursor (\fs -> case fileSearch (name file') fs of
+                                         Nothing  -> fsInsertFile file' fs
+                                         Just fs' -> Just fs')
+    Nothing    -> pure ()
   modifyBrowserMode BrowserNormal
 
 browserInsert :: Crux ()

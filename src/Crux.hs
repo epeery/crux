@@ -15,15 +15,17 @@ import           Crux.FS
 
 import qualified Data.Map.Strict      as M
 
+crux :: IO CruxState
 crux = do
   ecf <- readCruxFile
   case ecf of
-    Left s   -> error "Save file is formatted incorrectly"
+    Left s   -> putStrLn "Save file is formatted incorrectly" *> error s
     Right cf -> startCrux cf
 
 startCrux :: CruxFile -> IO CruxState
 startCrux cf = defaultMain (cruxApp defaultConfig) (defaultState cf)
 
+defaultConfig :: CruxConfig
 defaultConfig =
   CruxConfig { configBindings =
                  ViewBindings { browserNormalBindings =
@@ -89,6 +91,7 @@ defaultConfig =
                                   M.fromList [ (BAll, browserNormalMode)
                                              , (BChar 'g', browserGHigh) ] } }
 
+defaultState :: CruxFile -> CruxState
 defaultState (CruxFile cf) =
   CruxState { cruxBrowserState = BrowserState (FS cf []) BrowserNormal
             , cruxActiveView = startingView cf

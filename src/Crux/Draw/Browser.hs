@@ -3,27 +3,25 @@
 
 module Crux.Draw.Browser ( renderBrowser ) where
 
-import           Brick.Main                 as B
-import           Brick.Types                as B
-import           Brick.Widgets.Border       as B
-import           Brick.Widgets.Border.Style as B
-import           Brick.Widgets.Core         as B
+import           Brick.Types          as B
+import           Brick.Widgets.Border as B
+import           Brick.Widgets.Core   as B
 
-import           Crux.Actions.Utils
-import           Crux.Bindings
+import           Crux.Bindings        ()
 import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 import           Crux.Style
 
-import qualified Data.Map.Strict            as M
-import qualified Data.Text                  as T
-import           Data.Text                  ( Text )
+import qualified Data.Map.Strict      as M
+import qualified Data.Text            as T
+import           Data.Text            ( Text )
 
 renderBrowser :: CruxConfig -> BrowserState -> Widget ResourceName
 renderBrowser conf BrowserState{..} =
   drawBrowser browserCursor <=> drawMenu conf browserMode
 
+drawBrowser :: FS -> Widget ResourceName
 drawBrowser fs = padLeftRight 1 $ current <+> pad next
   where current =
           viewport "browser-current" Vertical $ pad $ drawBrowserCursor fs
@@ -33,7 +31,7 @@ drawBrowser fs = padLeftRight 1 $ current <+> pad next
         pad     = padLeft (Pad 1) . withAttr entry
 
 drawBrowserCursor :: FS -> Widget ResourceName
-drawBrowserCursor (FS cur prev) = dir
+drawBrowserCursor (FS cur _) = dir
   where (Stack u c d) = contents cur
 
         dir           = vBox $
@@ -42,20 +40,17 @@ drawBrowserCursor (FS cur prev) = dir
                   , map (drawPath False) d ]
 
 drawBrowserNext :: FS -> Widget ResourceName
-drawBrowserNext (FS cur prev) = dir
-  where (Stack u c d) = contents cur
+drawBrowserNext (FS cur _) = dir
+  where (Stack _ c _) = contents cur
 
         dir           = case c of
           Empty  -> emptyWidget
           Note{} -> emptyWidget
           f      -> drawBrowserCursor (FS f [])
 
-drawBrowserPrev :: FS -> Widget ResourceName
-drawBrowserPrev (FS cur [])       = emptyWidget
-drawBrowserPrev (FS cur (p : ps)) = drawBrowserCursor (FS p [])
-
-drawPath _ Empty = withAttr empty $ txt "Empty"
+drawPath :: Bool -> File -> Widget n
 drawPath True file = case file of
+  Empty      -> selectedStyle empty "Empty"
   Folder{..} -> selectedStyle selectedFolder name
   Entry{..}  -> selectedStyle selectedEntry name
   Task{..}   -> selectedStyle selectedTask
@@ -64,6 +59,7 @@ drawPath True file = case file of
   Note{..}   -> selectedStyle selectedNote name
   where selectedStyle s n = withAttr s $ txt (normalizeText n) <+> fill ' '
 drawPath _ file = case file of
+  Empty      -> unselectedStyle empty "Empty"
   Folder{..} -> unselectedStyle folder name
   Entry{..}  -> unselectedStyle entry name
   Task{..}   ->
@@ -117,8 +113,9 @@ drawInsertInput :: BrowserMode -> Widget ResourceName
 drawInsertInput mode = withAttr folder (txt modeText)
   where modeText = case mode of
           BrowserInsert BIFolder t -> "New folder: " `T.append` t `T.append` "|"
-          BrowserInsert BIEntry t  -> "New entry: " `T.append` t `T.append` "|"
-          BrowserInsert BITask t   -> "New task: " `T.append` t `T.append` "|"
-          BrowserInsert BINote t   -> "New note: " `T.append` t `T.append` "|"
+          BrowserInsert BIEntry t -> "New entry: " `T.append` t `T.append` "|"
+          BrowserInsert BITask t -> "New task: " `T.append` t `T.append` "|"
+          BrowserInsert BINote t -> "New note: " `T.append` t `T.append` "|"
           BrowserInsert BIRename t -> "Rename: " `T.append` t `T.append` "|"
           BrowserInsert BISearch t -> "/" `T.append` t `T.append` "|"
+          _ -> ""
