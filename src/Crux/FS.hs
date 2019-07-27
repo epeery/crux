@@ -89,7 +89,7 @@ data File =
   | Note { name     :: Text
          , noteDate :: UTCTime
          , priority :: Int }
-  deriving ( Read, Eq, Generic )
+  deriving ( Show, Read, Eq, Generic )
 
 data TaskStatus = Tracking { startTime :: UTCTime }
                 | Done { completedDate :: UTCTime }
@@ -99,11 +99,10 @@ data Session = Session { sessionStartDate :: UTCTime
                        , sessionEndDate   :: UTCTime }
   deriving ( Show, Read, Eq, Generic )
 
-instance Show File where
-  show Empty = "Empty"
-  show (Folder n (Stack u c d) _) = show (n, Stack u c d)
-  show a = show $ name a
-
+-- instance Show File where
+--   show Empty = "Empty"
+--   show (Folder n (Stack u c d) _) = show (n, Stack u c d)
+--   show a = show $ name a
 fileUp :: FS -> Maybe FS
 fileUp (FS dir prev) = case fileUp' dir of
   Nothing -> Nothing
