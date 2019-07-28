@@ -49,6 +49,7 @@ defaultConfig =
                                              , (BChar 'd', browserDeleteMode)
                                              , (BChar 'r', browserRename)
                                              , (BChar '/', browserSearch)
+                                             , (BKey "Tab", showTODOList)
                                              , (BKey "Space", browserTaskMode) ]
                               , browserFolderCreateBindings =
                                   M.fromList [ (BAll, browserNormalMode)
@@ -90,7 +91,11 @@ defaultConfig =
                                              , (BChar 'p', browserPriorityMode) ]
                               , browserGBindings =
                                   M.fromList [ (BAll, browserNormalMode)
-                                             , (BChar 'g', browserGHigh) ] } }
+                                             , (BChar 'g', browserGHigh) ]
+                              , browserTODOBindings =
+                                  M.fromList [ (BAll, browserNormalMode)
+                                             , (BChar 'q', quit)
+                                             , (BKey "Tab", showProjectBrowser) ] } }
 
 defaultState :: CruxFile -> CruxState
 defaultState (CruxFile cf) =

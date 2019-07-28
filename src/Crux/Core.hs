@@ -35,7 +35,8 @@ data ViewBindings =
                , browserDeleteBindings :: Bindings
                , browserPriorityBindings :: Bindings
                , browserTaskBindings :: Bindings
-               , browserGBindings :: Bindings }
+               , browserGBindings :: Bindings
+               , browserTODOBindings :: Bindings }
 
 type Bindings = Map Binding Action
 
@@ -64,6 +65,7 @@ data CruxState = CruxState { cruxBrowserState :: BrowserState
 
 data View = Browser
           | Help
+          | TODOList
           | Info
   deriving ( Show, Eq, Generic )
 

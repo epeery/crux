@@ -46,7 +46,7 @@ handleKey CruxConfig{..} s@CruxState{..} e = case eventToBinding e of
   Just a  -> do
     put (s { key = Just a })
     case cruxActiveView of
-      Browser -> case browserMode of
+      Browser  -> case browserMode of
         BrowserNormal    -> getAction browserNormalBindings a
         BrowserInsert{}  -> getAction browserInsertBindings a
         BrowserCommand c -> case c of
@@ -57,8 +57,9 @@ handleKey CruxConfig{..} s@CruxState{..} e = case eventToBinding e of
           BCDelete -> getAction browserDeleteBindings a
           BCTask -> getAction browserTaskBindings a
           BCG -> getAction browserGBindings a
-      Help    -> modifyActiveView Browser
-      Info    -> modifyActiveView Browser *> getAction browserNormalBindings a
+      Help     -> modifyActiveView Browser
+      TODOList -> getAction browserTODOBindings a
+      Info     -> modifyActiveView Browser *> getAction browserNormalBindings a
   where ViewBindings{..} = configBindings
 
         BrowserState{..} = cruxBrowserState

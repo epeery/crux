@@ -13,9 +13,10 @@ import           Crux.Style
 
 cruxDraw :: CruxConfig -> CruxState -> [Widget ResourceName]
 cruxDraw conf st = case cruxActiveView of
-  Info    -> [ drawInfo ]
-  Help    -> [ txt "TODO: Actually make a help menu" ]
-  Browser -> [ renderBrowser conf cruxBrowserState ]
+  Info     -> [ drawInfo ]
+  Help     -> [ txt "TODO: Actually make a help menu" ]
+  Browser  -> [ renderBrowser conf cruxBrowserState ]
+  TODOList -> [ txt "TODO: Make TODO list" ]
   where CruxState{..} = st
 
 drawInfo :: Widget n

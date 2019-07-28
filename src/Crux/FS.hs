@@ -329,7 +329,7 @@ fileSearch' n container = case stackCurrent $ contents container of
   Empty -> Nothing
   file  -> if T.toLower n `T.isInfixOf` T.toLower (name file)
            then Just container
-           else lookPrev container `mplus` lookNext container
+           else lookNext container `mplus` lookPrev container
   where lookPrev       = look fileUp'
 
         lookNext       = look fileDown'
