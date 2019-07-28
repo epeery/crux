@@ -53,13 +53,6 @@ packages:
       sha256: dcf5071895ee477e60e3c9de1e30eb711e11e9a7335db160616f80baeb20ad71
   original:
     hackage: word-wrap-0.4.1
-- completed:
-    hackage: cursor-0.0.0.1@sha256:51bacccfc32cf5c1e5c75ee0ceee0600a8dbac03d25b06fbc1e6e5039dadf39d,1512
-    pantry-tree:
-      size: 1712
-      sha256: be65bf9670daf587efd9f8241f209f9a114975fc8476c45de9b2e929cc7a5e99
-  original:
-    hackage: cursor-0.0.0.1
 snapshots:
 - completed:
     size: 500539
