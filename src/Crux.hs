@@ -86,6 +86,7 @@ defaultConfig =
                                                  , browserTrackToggle
                                                  )
                                              , (BKey "Enter", toggleTaskDone)
+                                             , (BChar 't', toggleTaskTODO)
                                              , (BChar 'p', browserPriorityMode) ]
                               , browserGBindings =
                                   M.fromList [ (BAll, browserNormalMode)

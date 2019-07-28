@@ -34,8 +34,9 @@ module Crux.FS
   , stackToList
   , taskEnd
   , taskSetDone
+  , taskSetTODO
   , taskStart
-  , taskUnsetDone
+  , taskUnsetStatus
   ) where
 
 import           Control.Monad ( mplus )
@@ -93,6 +94,7 @@ data File =
 
 data TaskStatus = Tracking { startTime :: UTCTime }
                 | Done { completedDate :: UTCTime }
+                | TODO { todoDate :: UTCTime }
   deriving ( Show, Read, Eq, Generic )
 
 data Session = Session { sessionStartDate :: UTCTime
@@ -244,30 +246,39 @@ setPriority' :: Int -> File -> Maybe File
 setPriority' _ Empty = Nothing
 setPriority' n file  = Just $ file { priority = n }
 
+taskSetStatus :: (File -> Maybe File) -> FS -> Maybe FS
+taskSetStatus _ (FS Empty _)   = Nothing
+taskSetStatus _ (FS Note{} _)  = Nothing
+taskSetStatus f (FS file prev) = case f . stackCurrent $ contents file of
+  Nothing    -> Nothing
+  Just file' -> do
+    let fs = FS (file { contents = sortStack $
+                          (contents file) { stackCurrent = file' } })
+                prev
+    case fileSearch (name file') fs of
+      Nothing  -> pure fs
+      Just fs' -> pure fs'
+
 taskSetDone :: UTCTime -> FS -> Maybe FS
-taskSetDone _ (FS Empty _)      = Nothing
-taskSetDone _ (FS Note{} _)     = Nothing
-taskSetDone time (FS file prev) =
-  case taskSetDone' time . stackCurrent $ contents file of
-    Nothing    -> Nothing
-    Just file' -> do
-      let fs = FS (file { contents = sortStack $
-                            (contents file) { stackCurrent = file' } })
-                  prev
-      case fileSearch (name file') fs of
-        Nothing  -> pure fs
-        Just fs' -> pure fs'
+taskSetDone time = taskSetStatus (taskSetDone' time)
 
 taskSetDone' :: UTCTime -> File -> Maybe File
-taskSetDone' _ Empty   = Nothing
-taskSetDone' time file = Just $ file { status   = Just $ Done time
-                                     , priority = 10 }
+taskSetDone' time file@Task{} = Just $ file { status   = Just $ Done time
+                                            , priority = 10 }
+taskSetDone' _ _ = Nothing
 
-taskUnsetDone :: FS -> Maybe FS
-taskUnsetDone (FS Empty _)   = Nothing
-taskUnsetDone (FS Note{} _)  = Nothing
-taskUnsetDone (FS file prev) =
-  case taskUnsetDone' . stackCurrent $ contents file of
+taskSetTODO :: UTCTime -> FS -> Maybe FS
+taskSetTODO time = taskSetStatus (taskSetTODO' time)
+
+taskSetTODO' :: UTCTime -> File -> Maybe File
+taskSetTODO' time file@Task{} = Just $ file { status = Just $ TODO time }
+taskSetTODO' _ _ = Nothing
+
+taskUnsetStatus :: FS -> Maybe FS
+taskUnsetStatus (FS Empty _)   = Nothing
+taskUnsetStatus (FS Note{} _)  = Nothing
+taskUnsetStatus (FS file prev) =
+  case taskUnsetStatus' . stackCurrent $ contents file of
     Nothing    -> Nothing
     Just file' -> do
       let fs = FS (file { contents = sortStack $
@@ -277,10 +288,9 @@ taskUnsetDone (FS file prev) =
         Nothing  -> pure fs
         Just fs' -> pure fs'
 
-taskUnsetDone' :: File -> Maybe File
-taskUnsetDone' file@Task{} = Just $ file { status   = Nothing
-                                         , priority = 0 }
-taskUnsetDone' _           = Nothing
+taskUnsetStatus' :: File -> Maybe File
+taskUnsetStatus' file@Task{} = Just $ file { status = Nothing }
+taskUnsetStatus' _           = Nothing
 
 stackDeleteCurrent :: Stack -> Stack
 stackDeleteCurrent (Stack _ Empty _)     = emptyStack

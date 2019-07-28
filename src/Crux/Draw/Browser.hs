@@ -76,8 +76,9 @@ showPriority n
 
 taskStatusText :: Maybe TaskStatus -> Text
 taskStatusText Nothing           = ""
-taskStatusText (Just Tracking{}) = "[STARTED]: "
-taskStatusText (Just Done{})     = "[DONE]: "
+taskStatusText (Just Tracking{}) = "[STARTED] "
+taskStatusText (Just Done{})     = "[DONE] "
+taskStatusText (Just TODO{})     = "[TODO] "
 
 normalizeText :: Text -> Text
 normalizeText "" = " "

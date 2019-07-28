@@ -205,6 +205,30 @@ browserInsertAppend = Action { actionName = "Handle insert"
                              , actionDesc = "Type while in insert more"
                              , actionFunc = browserInsert }
 
+---------------------------
+--  TODO: Refactor this  --
+---------------------------
+toggleTaskTODO :: Action
+toggleTaskTODO =
+  Action { actionName = "Toggle TODO"
+         , actionDesc = "Toggle the currently selected task's 'TODO status"
+         , actionFunc = do
+             now <- liftIO getCurrentTime
+             modifyBrowserCursor (\fs -> case fsCurrent fs of
+                                    Empty     -> Nothing
+                                    Note{}    -> Nothing
+                                    container ->
+                                      case stackCurrent $ contents container of
+                                        Task{status = Nothing} ->
+                                          taskSetTODO now fs
+                                        Task{status = Just TODO{}} ->
+                                          taskUnsetStatus fs
+                                        _ -> Nothing)
+             modifyBrowserMode BrowserNormal }
+
+---------------------------
+--  TODO: Refactor this  --
+---------------------------
 toggleTaskDone :: Action
 toggleTaskDone =
   Action { actionName = "Toggle done"
@@ -216,10 +240,14 @@ toggleTaskDone =
                                     Note{}    -> Nothing
                                     container ->
                                       case stackCurrent $ contents container of
-                                        Task{status = Nothing} ->
-                                          taskSetDone now fs
-                                        Task{status = Just Done{}} ->
-                                          taskUnsetDone fs
+                                        Task{ status = Nothing
+                                            } -> case taskSetDone now fs of
+                                          Nothing  -> Just fs
+                                          Just fs' -> setPriority 10 fs'
+                                        Task{ status = Just Done{}
+                                            } -> case taskUnsetStatus fs of
+                                          Nothing  -> Just fs
+                                          Just fs' -> setPriority 0 fs'
                                         _ -> Nothing)
              modifyBrowserMode BrowserNormal }
 
