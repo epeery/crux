@@ -4,7 +4,7 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Crux.Data.Types ( CruxFile(..), File(..), Session(..), TaskStatus(..) ) where
+module Crux.Data.Types ( CruxFile(..) ) where
 
 import           Crux.FS
 
