@@ -32,7 +32,7 @@ drawBrowser fs = padLeftRight 1 $ current <+> pad next
 
 drawBrowserCursor :: FS -> Widget ResourceName
 drawBrowserCursor (FS cur _) = dir
-  where (Stack u c d) = contents cur
+  where (Stack u c d) = getFileStack $ contents cur
 
         dir           = vBox $
           mconcat [ map (drawPath False) $ reverse u
@@ -41,7 +41,7 @@ drawBrowserCursor (FS cur _) = dir
 
 drawBrowserNext :: FS -> Widget ResourceName
 drawBrowserNext (FS cur _) = dir
-  where (Stack _ c _) = contents cur
+  where (Stack _ c _) = getFileStack $ contents cur
 
         dir           = case c of
           Empty  -> emptyWidget
@@ -53,8 +53,11 @@ drawPath True file = case file of
   Empty      -> selectedStyle empty "Empty"
   Folder{..} -> selectedStyle selectedFolder name
   Entry{..}  -> selectedStyle selectedEntry name
-  Task{..}   -> selectedStyle selectedTask
-                              (taskStatusText status
+  Task{..}   -> let todoStyle = case todoDate of
+                      Nothing -> selectedStyle selectedTask
+                      Just _  -> selectedStyle selectedTodo
+                in
+                    todoStyle (taskStatusText status
                                `T.append` showPriority priority `T.append` name)
   Note{..}   -> selectedStyle selectedNote name
   where selectedStyle s n = withAttr s $ txt (normalizeText n) <+> fill ' '
@@ -62,10 +65,12 @@ drawPath _ file = case file of
   Empty      -> unselectedStyle empty "Empty"
   Folder{..} -> unselectedStyle folder name
   Entry{..}  -> unselectedStyle entry name
-  Task{..}   ->
-    unselectedStyle task
-                    (taskStatusText status `T.append` showPriority priority
-                     `T.append` name)
+  Task{..}   -> let todoStyle = case todoDate of
+                      Nothing -> unselectedStyle task
+                      Just _  -> unselectedStyle todo
+                in
+                    todoStyle (taskStatusText status
+                               `T.append` showPriority priority `T.append` name)
   Note{..}   -> unselectedStyle note name
   where unselectedStyle s n = withAttr s . txt $ normalizeText n
 
@@ -78,7 +83,6 @@ taskStatusText :: Maybe TaskStatus -> Text
 taskStatusText Nothing           = ""
 taskStatusText (Just Tracking{}) = "[STARTED] "
 taskStatusText (Just Done{})     = "[DONE] "
-taskStatusText (Just TODO{})     = "[TODO] "
 
 normalizeText :: Text -> Text
 normalizeText "" = " "

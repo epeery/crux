@@ -22,12 +22,12 @@ newtype CruxFile = CruxFile { cruxFileContents :: File }
 ------------------------------------------------------------------------
 --                           JSON instances                           --
 ------------------------------------------------------------------------
-instance FromJSON Stack where
-  parseJSON = withArray "Stack" $ \arr -> stackFromList
+instance FromJSON FileStack where
+  parseJSON = withArray "FileStack" $ \arr -> stackFromList
     <$> mapM parseJSON (Vector.toList arr)
 
-instance ToJSON Stack where
-  toJSON s = toJSON $ stackToList s
+instance ToJSON FileStack where
+  toJSON s = toJSON . stackToList $ getFileStack s
 
 instance FromJSON File where
   parseJSON = genericParseJSON (idiomaticJsonOptions id)
