@@ -34,7 +34,6 @@ defaultConfig =
   CruxConfig { configBindings =
                  ViewBindings { browserNormalBindings =
                                   M.fromList [ (BChar '?', showHelp)
-                                             , (BKey "Escape", quit)
                                              , (BChar 'q', quit)
                                              , (BChar 'j', browserDown)
                                              , (BChar 'k', browserUp)
@@ -100,6 +99,9 @@ defaultConfig =
                                   M.fromList [ (BAll, browserNormalMode)
                                              , (BChar 'q', quit)
                                              , (BKey "Tab", showProjectBrowser)
+                                             , ( BKey "Escape"
+                                                 , showProjectBrowser
+                                                 )
                                              , (BKey "Enter", todoOpen)
                                              , (BChar 'j', todoDown)
                                              , (BChar 'k', todoUp) ] } }
