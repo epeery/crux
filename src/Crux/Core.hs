@@ -61,7 +61,6 @@ instance Show ActionName where
 
 data CruxState = CruxState { cruxBrowserState :: BrowserState
                            , cruxTodos :: File
-                           , cruxPreviousTodos :: [File]
                            , cruxFSPath :: [Text]
                            , cruxActiveView :: View
                            , key :: Maybe Binding }

@@ -13,5 +13,4 @@ main = do
   s <- crux
   writeCruxFile (CruxFile (fsCurrent . fromMaybe fsTop $ browserCursor $
                            cruxBrowserState s)
-                          (cruxTodos s)
-                          (cruxPreviousTodos s))
+                          (cruxTodos s))

@@ -101,11 +101,10 @@ defaultConfig =
                                              , (BChar 'k', todoUp) ] } }
 
 defaultState :: CruxFile -> CruxState
-defaultState (CruxFile cf tl ptl) =
+defaultState (CruxFile cf tl) =
   CruxState { cruxBrowserState = BrowserState (FS cf []) BrowserNormal
             , cruxActiveView = startingView cf
             , cruxTodos = tl
-            , cruxPreviousTodos = ptl
             , cruxFSPath = []
             , key = Nothing }
 

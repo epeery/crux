@@ -17,9 +17,8 @@ import           GHC.Generics ( Generic )
 ------------------------------------------------------------------------
 --                             Datatypes                              --
 ------------------------------------------------------------------------
-data CruxFile = CruxFile { cruxFileContents          :: File
-                         , cruxFileTodoList          :: File
-                         , cruxFilePreviousTodoLists :: [File] }
+data CruxFile = CruxFile { cruxFileContents :: File
+                         , cruxFileTodoList :: File }
   deriving ( Show, Eq, Generic )
 
 ------------------------------------------------------------------------
