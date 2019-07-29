@@ -41,6 +41,7 @@ defaultConfig =
                                              , (BKey "Right", browserOpen)
                                              , (BKey "Left", browserBack)
                                              , (BChar 'T', browserTop)
+                                             , (BChar 'p', getToPath)
                                              , (BChar 'H', browserHigh)
                                              , (BChar 'L', browserLow)
                                              , (BChar 'G', browserLow)

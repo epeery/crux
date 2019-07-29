@@ -32,7 +32,7 @@ drawBrowser fs = padLeftRight 1 $ current <+> pad next
 
 drawBrowserCursor :: FS -> Widget ResourceName
 drawBrowserCursor (FS cur _) = dir
-  where (Stack u c d) = getFileStack $ contents cur
+  where (Stack u c d) = contents cur
 
         dir           = vBox $
           mconcat [ map (drawPath False) $ reverse u
@@ -41,7 +41,7 @@ drawBrowserCursor (FS cur _) = dir
 
 drawBrowserNext :: FS -> Widget ResourceName
 drawBrowserNext (FS cur _) = dir
-  where (Stack _ c _) = getFileStack $ contents cur
+  where (Stack _ c _) = contents cur
 
         dir           = case c of
           Empty  -> emptyWidget
