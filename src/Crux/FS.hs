@@ -15,10 +15,13 @@ module Crux.FS
   , fileBottom
   , fileDelete
   , fileDown
+  , fileDown'
   , fileRename
   , fileSearch
   , fileTop
+  , fileTop'
   , fileUp
+  , fileUp'
   , fsDelete
   , fsIn
   , fsInsertFile
@@ -90,7 +93,8 @@ data File =
          , status   :: Maybe TaskStatus
          , todoDate :: Maybe UTCTime
          , sessions :: [Session]
-         , priority :: Int }
+         , priority :: Int
+         , path     :: Maybe [Text] }
   | Note { name     :: Text
          , noteDate :: UTCTime
          , priority :: Int }
@@ -145,6 +149,11 @@ fileTop :: FS -> Maybe FS
 fileTop fs = case fileUp fs of
   Nothing -> Just fs
   Just f  -> fileTop f
+
+fileTop' :: File -> Maybe File
+fileTop' file = case fileUp' file of
+  Nothing -> Just file
+  Just f  -> fileTop' f
 
 fileBottom :: FS -> Maybe FS
 fileBottom fs = case fileDown fs of
@@ -357,7 +366,8 @@ emptyTask n = Task { name     = n
                    , status   = Nothing
                    , sessions = []
                    , todoDate = Nothing
-                   , priority = 0 }
+                   , priority = 0
+                   , path     = Nothing }
 
 getFSPath :: FS -> [Text]
 getFSPath fs@(FS file _) =
@@ -371,7 +381,7 @@ getFSPath fs@(FS file _) =
         Just fs' -> getFSPath fs' ++ [ n ]
 
 goToFSPath :: [Text] -> FS -> Maybe FS
-goToFSPath path fs = fsTop fs >>= goToFSPath' path
+goToFSPath p fs = fsTop fs >>= goToFSPath' p
 
 goToFSPath' :: [Text] -> FS -> Maybe FS
 goToFSPath' [] fs       = Just fs

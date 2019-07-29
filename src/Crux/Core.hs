@@ -16,6 +16,7 @@ import           Control.Monad.Reader
 import           Control.Monad.State
 
 import           Crux.Browser         ( BrowserState )
+import           Crux.FS
 
 import           Data.Map.Strict      ( Map )
 import           Data.String          ( IsString )
@@ -59,6 +60,9 @@ instance Show ActionName where
   show = T.unpack . actionNameText
 
 data CruxState = CruxState { cruxBrowserState :: BrowserState
+                           , cruxTodos :: File
+                           , cruxPreviousTodos :: [File]
+                           , cruxFSPath :: [Text]
                            , cruxActiveView :: View
                            , key :: Maybe Binding }
   deriving ( Eq, Generic )

@@ -41,7 +41,6 @@ defaultConfig =
                                              , (BKey "Right", browserOpen)
                                              , (BKey "Left", browserBack)
                                              , (BChar 'T', browserTop)
-                                             , (BChar 'p', getToPath)
                                              , (BChar 'H', browserHigh)
                                              , (BChar 'L', browserLow)
                                              , (BChar 'G', browserLow)
@@ -96,12 +95,18 @@ defaultConfig =
                               , browserTODOBindings =
                                   M.fromList [ (BAll, browserNormalMode)
                                              , (BChar 'q', quit)
-                                             , (BKey "Tab", showProjectBrowser) ] } }
+                                             , (BKey "Tab", showProjectBrowser)
+                                             , (BKey "Enter", todoOpen)
+                                             , (BChar 'j', todoDown)
+                                             , (BChar 'k', todoUp) ] } }
 
 defaultState :: CruxFile -> CruxState
-defaultState (CruxFile cf) =
+defaultState (CruxFile cf tl ptl) =
   CruxState { cruxBrowserState = BrowserState (FS cf []) BrowserNormal
             , cruxActiveView = startingView cf
+            , cruxTodos = tl
+            , cruxPreviousTodos = ptl
+            , cruxFSPath = []
             , key = Nothing }
 
 startingView :: File -> View

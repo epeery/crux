@@ -16,6 +16,9 @@ modifyBrowserCursor f = do
   put (s { cruxBrowserState =
              cruxBrowserState { browserCursor = fromMaybe f browserCursor } })
 
+modifyTodoCursor :: (File -> Maybe File) -> Crux ()
+modifyTodoCursor f = modify (\s -> s { cruxTodos = fromMaybe f (cruxTodos s) })
+
 modifyBrowserInsert :: BInsert -> Text -> Crux ()
 modifyBrowserInsert m t = modifyBrowserMode (BrowserInsert m t)
 

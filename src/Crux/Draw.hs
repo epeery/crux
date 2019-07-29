@@ -9,14 +9,18 @@ import           Brick.Widgets.Core   as B
 
 import           Crux.Core
 import           Crux.Draw.Browser    ( renderBrowser )
+import           Crux.Draw.Todo       ( renderTodo )
+import           Crux.FS
 import           Crux.Style
+
+import           Data.Maybe           ( fromJust )
 
 cruxDraw :: CruxConfig -> CruxState -> [Widget ResourceName]
 cruxDraw conf st = case cruxActiveView of
   Info     -> [ drawInfo ]
   Help     -> [ txt "TODO: Actually make a help menu" ]
   Browser  -> [ renderBrowser conf cruxBrowserState ]
-  TODOList -> [ txt "TODO: Make TODO list" ]
+  TODOList -> [ renderTodo cruxTodos ]
   where CruxState{..} = st
 
 drawInfo :: Widget n

@@ -9,6 +9,7 @@ module Crux.Data.Types ( CruxFile(..) ) where
 import           Crux.FS
 
 import           Data.Aeson
+import           Data.Text    ( Text )
 import qualified Data.Vector  as Vector
 
 import           GHC.Generics ( Generic )
@@ -16,12 +17,18 @@ import           GHC.Generics ( Generic )
 ------------------------------------------------------------------------
 --                             Datatypes                              --
 ------------------------------------------------------------------------
-newtype CruxFile = CruxFile { cruxFileContents :: File }
-  deriving ( Show, Eq, Generic, FromJSON, ToJSON )
+data CruxFile = CruxFile { cruxFileContents          :: File
+                         , cruxFileTodoList          :: File
+                         , cruxFilePreviousTodoLists :: [File] }
+  deriving ( Show, Eq, Generic )
 
 ------------------------------------------------------------------------
 --                           JSON instances                           --
 ------------------------------------------------------------------------
+instance FromJSON CruxFile
+
+instance ToJSON CruxFile
+
 instance FromJSON Stack where
   parseJSON = withArray "Stack" $ \arr -> stackFromList
     <$> mapM parseJSON (Vector.toList arr)

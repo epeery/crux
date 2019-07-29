@@ -8,6 +8,7 @@ import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 
+import qualified Data.Maybe         as M
 import qualified Data.Text          as T
 import           Data.Text          ( Text )
 import           Data.Time
@@ -22,6 +23,28 @@ browserDown = Action { actionName = "Down"
                      , actionDesc = "Move down"
                      , actionFunc = modifyBrowserCursor fileDown }
 
+todoUp :: Action
+todoUp = Action { actionName = "Up"
+                , actionDesc = "Move up"
+                , actionFunc = modifyTodoCursor fileUp' }
+
+todoDown :: Action
+todoDown = Action { actionName = "Down"
+                  , actionDesc = "Move down"
+                  , actionFunc = modifyTodoCursor fileDown' }
+
+todoOpen :: Action
+todoOpen = Action { actionName = "Open TODO item"
+                  , actionDesc = "Go to the currently selected TODO item"
+                  , actionFunc = do
+                      p <- stackCurrent . contents . cruxTodos <$> get
+                      case p of
+                        Task{} -> case path p of
+                          Nothing    -> liftIO $ print "Nothing."
+                          Just path' -> modifyBrowserCursor (goToFSPath path')
+                        _      -> pure ()
+                      modifyActiveView Browser }
+
 browserOpen :: Action
 browserOpen = Action { actionName = "Open"
                      , actionDesc = "Open a file"
@@ -31,6 +54,13 @@ browserBack :: Action
 browserBack = Action { actionName = "Back"
                      , actionDesc = "Move back to the previous directory"
                      , actionFunc = modifyBrowserCursor fsOut }
+
+getPath :: Action
+getPath = Action { actionName = "Back"
+                 , actionDesc = "Move back to the previous directory"
+                 , actionFunc = do
+                     fs <- browserCursor . cruxBrowserState <$> get
+                     liftIO . print $ getFSPath fs }
 
 browserTop :: Action
 browserTop = Action { actionName = "Top"
@@ -214,16 +244,32 @@ toggleTaskTODO =
          , actionDesc = "Toggle the currently selected task's 'TODO status"
          , actionFunc = do
              now <- liftIO getCurrentTime
-             modifyBrowserCursor (\fs -> case fsCurrent fs of
-                                    Empty     -> Nothing
-                                    Note{}    -> Nothing
-                                    container ->
-                                      case stackCurrent $ contents container of
-                                        Task{status = Nothing} ->
-                                          taskSetTODO now fs
-                                        Task{status = Just TODO{}} ->
-                                          taskUnsetStatus fs
-                                        _ -> Nothing)
+             fs <- browserCursor . cruxBrowserState <$> get
+             case fsCurrent fs of
+               Empty     -> pure ()
+               Note{}    -> pure ()
+               container -> case stackCurrent $ contents container of
+                 Task{todoDate = Nothing} -> do
+                   modify (\st ->
+                           st { cruxTodos =
+                                  case (insertFile ((stackCurrent . contents $
+                                                     fsCurrent fs) { path = Just $ getFSPath fs })
+                                                   (cruxTodos st)) of
+                                    Nothing -> cruxTodos st
+                                    Just a  -> a })
+                   modifyBrowserCursor $ taskSetTODO now
+                 Task{todoDate = Just _} -> do
+                   modify (\st ->
+                           st { cruxTodos =
+                                  (cruxTodos st) { contents = stackFromList $
+                                                     filter ((/= (Just $
+                                                                  getFSPath fs))
+                                                             . path)
+                                                            (stackToList $
+                                                             contents $
+                                                             cruxTodos st) } })
+                   modifyBrowserCursor taskUnsetTODO
+                 _ -> pure ()
              modifyBrowserMode BrowserNormal }
 
 ---------------------------

@@ -42,7 +42,7 @@ parseCruxFile :: FromJSON a => ByteString -> Either String a
 parseCruxFile = eitherDecode . BL.fromStrict
 
 emptyCruxFile :: CruxFile
-emptyCruxFile = CruxFile (emptyFolder "crux")
+emptyCruxFile = CruxFile (emptyFolder "crux") (emptyFolder "todo") []
 
 writeCruxFile :: CruxFile -> IO ()
 writeCruxFile cf = do

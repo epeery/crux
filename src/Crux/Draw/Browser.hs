@@ -55,7 +55,7 @@ drawPath True file = case file of
   Entry{..}  -> selectedStyle selectedEntry name
   Task{..}   -> let todoStyle = case todoDate of
                       Nothing -> selectedStyle selectedTask
-                      Just _  -> selectedStyle selectedTodo
+                      Just _  -> selectedStyle selectedTodo . ("٭ " `T.append`)
                 in
                     todoStyle (taskStatusText status
                                `T.append` showPriority priority `T.append` name)
@@ -67,7 +67,7 @@ drawPath _ file = case file of
   Entry{..}  -> unselectedStyle entry name
   Task{..}   -> let todoStyle = case todoDate of
                       Nothing -> unselectedStyle task
-                      Just _  -> unselectedStyle todo
+                      Just _  -> unselectedStyle todo . ("٭ " `T.append`)
                 in
                     todoStyle (taskStatusText status
                                `T.append` showPriority priority `T.append` name)
