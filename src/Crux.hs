@@ -19,7 +19,11 @@ crux :: IO CruxState
 crux = do
   ecf <- readCruxFile
   case ecf of
-    Left s   -> putStrLn "Save file is formatted incorrectly" *> error s
+    Left s   -> do
+      putStrLn "Save file is formatted incorrectly"
+      fp <- getCruxFilePath
+      putStrLn $ "File is located at: " ++ fp
+      error s
     Right cf -> startCrux cf
 
 startCrux :: CruxFile -> IO CruxState
