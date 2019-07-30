@@ -40,6 +40,6 @@ drawTodo selected file@Task{} =
         _           -> id
   in
       if selected
-      then doneStyle True . withAttr selectedEntry . txt $ name task
-      else doneStyle False . withAttr entry . txt $ name task
+      then doneStyle True . withAttr selectedEntry . txt $ name file
+      else doneStyle False . withAttr entry . txt $ name file
 drawTodo _ _ = emptyWidget
