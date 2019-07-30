@@ -34,7 +34,7 @@ dependencies:
 - brick
 - vty
 - vector
-- pretty-simple
+- filelock
 
 library:
   source-dirs: src
