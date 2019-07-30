@@ -4,8 +4,10 @@ module Crux.Data
   ( emptyCruxFile
   , encodeCruxFile
   , getCruxFilePath
+  , lockCruxFile
   , parseCruxFile
   , readCruxFile
+  , unlockCruxFile
   , writeCruxFile
   ) where
 
@@ -21,6 +23,7 @@ import qualified Data.ByteString.Lazy     as BL
 import           Path.IO                  ( forgivingAbsence )
 
 import           System.Directory         as D
+import qualified System.FileLock          as FL
 import           System.FilePath          ( (</>) )
 
 getCruxFilePath :: IO FilePath
@@ -37,6 +40,14 @@ readCruxFile = do
     Nothing      -> pure $ Right emptyCruxFile
     Just ""      -> pure $ Right emptyCruxFile
     Just content -> pure $ parseCruxFile content
+
+lockCruxFile :: IO (Maybe FL.FileLock)
+lockCruxFile = do
+  p <- getCruxFilePath
+  FL.tryLockFile p FL.Exclusive
+
+unlockCruxFile :: FL.FileLock -> IO ()
+unlockCruxFile = FL.unlockFile
 
 parseCruxFile :: FromJSON a => ByteString -> Either String a
 parseCruxFile = eitherDecode . BL.fromStrict

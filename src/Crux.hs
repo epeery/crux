@@ -6,6 +6,7 @@ import           Brick.Main           as B
 
 import           Crux.Actions
 import           Crux.Actions.Browser
+import           Crux.Actions.Utils   ( fromMaybe )
 import           Crux.App
 import           Crux.Browser
 import           Crux.Core
@@ -15,7 +16,9 @@ import           Crux.FS
 
 import qualified Data.Map.Strict      as M
 
-crux :: IO CruxState
+import           System.Exit          ( die )
+
+crux :: IO ()
 crux = do
   ecf <- readCruxFile
   case ecf of
@@ -24,7 +27,16 @@ crux = do
       fp <- getCruxFilePath
       putStrLn $ "File is located at: " ++ fp
       error s
-    Right cf -> startCrux cf
+    Right cf -> do
+      lock <- lockCruxFile
+      case lock of
+        Nothing -> die "Failed to lock data file. Is Crux already running?"
+        Just fl -> do
+          s <- startCrux cf
+          writeCruxFile (CruxFile (fsCurrent . fromMaybe fsTop $ browserCursor $
+                                   cruxBrowserState s)
+                                  (cruxTodos s))
+          unlockCruxFile fl
 
 startCrux :: CruxFile -> IO CruxState
 startCrux cf = defaultMain (cruxApp defaultConfig) (defaultState cf)
