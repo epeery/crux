@@ -201,10 +201,13 @@ fsRename (FS Note{} _) _  = Nothing
 fsRename (FS file prev) t = case fileRename (stackCurrent $ contents file) t of
   Nothing -> Nothing
   Just f  -> do
-    let fs = FS file { contents = sortStack $
-                         (contents file) { stackCurrent = f } }
+    let f' = case f of
+          Task{} -> f { todoDate = Nothing }
+          _      -> f
+        fs = FS file { contents = sortStack $
+                         (contents file) { stackCurrent = f' } }
                 prev
-    case fileSearch (name f) fs of
+    case fileSearch (name f') fs of
       Nothing  -> pure fs
       Just fs' -> pure fs'
 
