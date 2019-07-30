@@ -32,8 +32,8 @@ drawTodoCursor file = dir
 
 drawTodo :: Bool -> File -> Widget n
 drawTodo _ Empty = withAttr empty $ txt "No TODOs yet"
-drawTodo selected task@Task{} =
-  let doneStyle b = case status task of
+drawTodo selected file@Task{} =
+  let doneStyle b = case status file of
         Just Done{} -> if b
                        then forceAttr selectedDoneTodo
                        else forceAttr doneTodo
