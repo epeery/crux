@@ -8,14 +8,9 @@ import           Brick.Widgets.Center as B
 import           Brick.Widgets.Core   as B
 
 import           Crux.Bindings        ()
-import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 import           Crux.Style
-
-import qualified Data.Map.Strict      as M
-import qualified Data.Text            as T
-import           Data.Text            ( Text )
 
 renderTodo :: File -> Widget ResourceName
 renderTodo = center . withAttr entry . borderWithLabel (txt "Today's TODOs")
