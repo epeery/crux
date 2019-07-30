@@ -7,8 +7,6 @@ import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 
-import           Data.Maybe         ( isJust )
-
 quit :: Action
 quit = Action { actionName = "Quit"
               , actionDesc = "Exit the app"
