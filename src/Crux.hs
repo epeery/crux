@@ -109,7 +109,7 @@ defaultConfig =
                                              , (BChar 'g', browserGHigh) ]
                               , browserTODOBindings =
                                   M.fromList [ (BAll, browserNormalMode)
-                                             , (BChar 'q', quit)
+                                             , (BChar 'q', showProjectBrowser)
                                              , (BKey "Tab", showProjectBrowser)
                                              , ( BKey "Escape"
                                                  , showProjectBrowser
