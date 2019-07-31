@@ -15,8 +15,7 @@ defaultAttrMap _ =
                 `V.withStyle` V.reverseVideo
               )
           , ( selectedEntry
-              , fg V.brightWhite `V.withStyle` V.bold
-                `V.withStyle` V.reverseVideo
+              , V.defAttr `V.withStyle` V.bold `V.withStyle` V.reverseVideo
               )
           , ( selectedTask
               , fg V.brightGreen `V.withStyle` V.bold
@@ -34,7 +33,7 @@ defaultAttrMap _ =
                 `V.withStyle` V.reverseVideo
               )
           , (folder, fg V.brightBlue `V.withStyle` V.bold)
-          , (entry, fg V.white)
+          , (entry, V.defAttr)
           , (task, fg V.brightGreen)
           , (doneTodo, fg V.white `V.withStyle` V.dim)
           , (note, fg V.brightCyan)
