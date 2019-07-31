@@ -120,7 +120,8 @@ drawInsertInput :: BrowserMode -> Widget ResourceName
 drawInsertInput mode = withAttr folder (txt modeText)
   where modeText = case mode of
           BrowserInsert BIFolder t -> "New folder: " `T.append` t `T.append` "|"
-          BrowserInsert BIProject t -> "New entry: " `T.append` t `T.append` "|"
+          BrowserInsert BIProject t ->
+            "New project: " `T.append` t `T.append` "|"
           BrowserInsert BITask t -> "New task: " `T.append` t `T.append` "|"
           BrowserInsert BINote t -> "New note: " `T.append` t `T.append` "|"
           BrowserInsert BIRename t -> "Rename: " `T.append` t `T.append` "|"
