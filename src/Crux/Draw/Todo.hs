@@ -13,8 +13,9 @@ import           Crux.FS
 import           Crux.Style
 
 renderTodo :: File -> Widget ResourceName
-renderTodo = center . withAttr entry . borderWithLabel (txt "Today's TODOs")
-  . padAll 2 . drawTodoCursor
+renderTodo = center . padAll 1 . withAttr entry . vLimit 24 . hLimit 75
+  . borderWithLabel (txt "Today's TODOs") . padAll 1
+  . viewport "todos" Vertical . drawTodoCursor
 
 drawTodoCursor :: File -> Widget ResourceName
 drawTodoCursor file = dir
