@@ -40,4 +40,4 @@ drawInfo = withAttr selectedAttr $ vCenterLayer $ vBox $
              , withAttr entry $ str " for a full list of key bindings" ]
       , str " "
       , str "Made by Eli Peery"
-      , str "https://epeery.com" ]
+      , hyperlink "https://epeery.com" $ str "https://epeery.com" ]
