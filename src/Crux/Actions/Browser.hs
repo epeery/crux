@@ -89,18 +89,19 @@ newFolder = Action { actionName = "New folder"
                    , actionFunc = folderInsert }
 
 newProject :: Action
-newProject = Action { actionName = "New project"
-                  , actionDesc = "Create a new project "
-                  , actionFunc = modifyBrowserMode (BrowserInsert BIProject"") }
+newProject =
+  Action { actionName = "New project"
+         , actionDesc = "Create a new project "
+         , actionFunc = modifyBrowserMode (BrowserInsert BIProject "") }
 
 newTask :: Action
-newTask = Action { actionName = "New Task"
+newTask = Action { actionName = "New task"
                  , actionDesc = "Create a new task"
                  , actionFunc = modifyBrowserMode (BrowserInsert BITask "") }
 
 newNote :: Action
-newNote = Action { actionName = "New entry"
-                 , actionDesc = "Create a new entry or task"
+newNote = Action { actionName = "New note"
+                 , actionDesc = "Create a new note"
                  , actionFunc = modifyBrowserMode (BrowserInsert BINote "") }
 
 browserDelete :: Action
@@ -367,10 +368,10 @@ selectCreateMode = do
   let BrowserState{..} = cruxBrowserState
       file = fsCurrent browserCursor
   case file of
-    Folder{..} -> modifyBrowserMode (BrowserCommand BCFolderCreate)
-    Project{..}  -> modifyBrowserMode (BrowserCommand BCProjectCreate)
-    Task{..}   -> modifyBrowserMode (BrowserCommand BCTaskCreate)
-    _          -> pure ()
+    Folder{..}  -> modifyBrowserMode (BrowserCommand BCFolderCreate)
+    Project{..} -> modifyBrowserMode (BrowserCommand BCProjectCreate)
+    Task{..}    -> modifyBrowserMode (BrowserCommand BCTaskCreate)
+    _           -> pure ()
 
 selectTaskMode :: Crux ()
 selectTaskMode = do
@@ -379,4 +380,4 @@ selectTaskMode = do
       file = fsCurrent browserCursor
   case file of
     Project{..} -> modifyBrowserMode (BrowserCommand BCTask)
-    _         -> pure ()
+    _           -> pure ()
