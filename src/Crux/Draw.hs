@@ -26,11 +26,11 @@ drawInfo = withAttr selectedAttr $ vCenterLayer $ vBox $
       [ str "CRUX v0.1.0.0"
       , str " "
       , hBox [ str "Press "
-             , withAttr folder (str "np")
-             , withAttr project $ str " to to create a new project" ]
-      , hBox [ str "Press "
              , withAttr folder (str "nf")
              , withAttr project $ str " to create a new folder" ]
+      , hBox [ str "Press "
+             , withAttr folder (str "np")
+             , withAttr project $ str " to to create a new project" ]
       , hBox [ str "Press "
              , withAttr folder (str "q")
              , withAttr project $ str " to quit the program" ]
