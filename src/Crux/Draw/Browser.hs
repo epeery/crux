@@ -28,7 +28,7 @@ drawBrowser fs = padLeftRight 1 $ current <+> pad next
 
         next    = viewport "browser-next" Vertical $ pad $ drawBrowserNext fs
 
-        pad     = padLeft (Pad 1) . withAttr entry
+        pad     = padLeft (Pad 1) . withAttr project
 
 drawBrowserCursor :: FS -> Widget ResourceName
 drawBrowserCursor (FS cur _) = dir
@@ -50,28 +50,30 @@ drawBrowserNext (FS cur _) = dir
 
 drawPath :: Bool -> File -> Widget n
 drawPath True file = case file of
-  Empty      -> selectedStyle empty "Empty"
-  Folder{..} -> selectedStyle selectedFolder name
-  Entry{..}  -> selectedStyle selectedEntry name
-  Task{..}   -> let todoStyle = case todoDate of
-                      Nothing -> selectedStyle selectedTask
-                      Just _  -> selectedStyle selectedTodo . ("٭ " `T.append`)
-                in
-                    todoStyle (taskStatusText status
-                               `T.append` showPriority priority `T.append` name)
-  Note{..}   -> selectedStyle selectedNote name
+  Empty       -> selectedStyle empty "Empty"
+  Folder{..}  -> selectedStyle selectedFolder name
+  Project{..} -> selectedStyle selectedProject name
+  Task{..}    ->
+    let todoStyle = case todoDate of
+          Nothing -> selectedStyle selectedTask
+          Just _  -> selectedStyle selectedTodo . ("٭ " `T.append`)
+    in
+        todoStyle (taskStatusText status `T.append` showPriority priority
+                   `T.append` name)
+  Note{..}    -> selectedStyle selectedNote name
   where selectedStyle s n = withAttr s $ txt (normalizeText n) <+> fill ' '
 drawPath _ file = case file of
-  Empty      -> unselectedStyle empty "Empty"
-  Folder{..} -> unselectedStyle folder name
-  Entry{..}  -> unselectedStyle entry name
-  Task{..}   -> let todoStyle = case todoDate of
-                      Nothing -> unselectedStyle task
-                      Just _  -> unselectedStyle todo . ("٭ " `T.append`)
-                in
-                    todoStyle (taskStatusText status
-                               `T.append` showPriority priority `T.append` name)
-  Note{..}   -> unselectedStyle note name
+  Empty       -> unselectedStyle empty "Empty"
+  Folder{..}  -> unselectedStyle folder name
+  Project{..} -> unselectedStyle project name
+  Task{..}    ->
+    let todoStyle = case todoDate of
+          Nothing -> unselectedStyle task
+          Just _  -> unselectedStyle todo . ("٭ " `T.append`)
+    in
+        todoStyle (taskStatusText status `T.append` showPriority priority
+                   `T.append` name)
+  Note{..}    -> unselectedStyle note name
   where unselectedStyle s n = withAttr s . txt $ normalizeText n
 
 showPriority :: Int -> Text
@@ -93,7 +95,7 @@ drawMenu CruxConfig{..} mode = case mode of
   BrowserInsert{} -> drawInsertInput mode
   BrowserCommand c -> case c of
     BCFolderCreate -> drawKeybindsMenu browserFolderCreateBindings
-    BCEntryCreate -> drawKeybindsMenu browserEntryCreateBindings
+    BCProjectCreate -> drawKeybindsMenu browserProjectCreateBindings
     BCTaskCreate -> drawKeybindsMenu browserTaskCreateBindings
     BCDelete -> drawKeybindsMenu browserDeleteBindings
     BCPriority -> drawKeybindsMenu browserPriorityBindings
@@ -118,7 +120,7 @@ drawInsertInput :: BrowserMode -> Widget ResourceName
 drawInsertInput mode = withAttr folder (txt modeText)
   where modeText = case mode of
           BrowserInsert BIFolder t -> "New folder: " `T.append` t `T.append` "|"
-          BrowserInsert BIEntry t -> "New entry: " `T.append` t `T.append` "|"
+          BrowserInsert BIProject t -> "New entry: " `T.append` t `T.append` "|"
           BrowserInsert BITask t -> "New task: " `T.append` t `T.append` "|"
           BrowserInsert BINote t -> "New note: " `T.append` t `T.append` "|"
           BrowserInsert BIRename t -> "Rename: " `T.append` t `T.append` "|"

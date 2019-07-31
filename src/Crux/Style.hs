@@ -14,7 +14,7 @@ defaultAttrMap _ =
               , fg V.brightBlue `V.withStyle` V.bold
                 `V.withStyle` V.reverseVideo
               )
-          , ( selectedEntry
+          , ( selectedProject
               , V.defAttr `V.withStyle` V.bold `V.withStyle` V.reverseVideo
               )
           , ( selectedTask
@@ -33,7 +33,7 @@ defaultAttrMap _ =
                 `V.withStyle` V.reverseVideo
               )
           , (folder, fg V.brightBlue `V.withStyle` V.bold)
-          , (entry, V.defAttr)
+          , (project, V.defAttr)
           , (task, fg V.brightGreen)
           , (doneTodo, fg V.white `V.withStyle` V.dim)
           , (note, fg V.brightCyan)
@@ -52,11 +52,11 @@ folder = "folder"
 selectedFolder :: AttrName
 selectedFolder = folder <> "selected"
 
-entry :: AttrName
-entry = "file"
+project :: AttrName
+project = "file"
 
-selectedEntry :: AttrName
-selectedEntry = entry <> "selected"
+selectedProject :: AttrName
+selectedProject = project <> "selected"
 
 task :: AttrName
 task = "task"

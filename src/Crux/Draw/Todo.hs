@@ -13,7 +13,7 @@ import           Crux.FS
 import           Crux.Style
 
 renderTodo :: File -> Widget ResourceName
-renderTodo = center . padAll 1 . withAttr entry . vLimit 24 . hLimit 75
+renderTodo = center . padAll 1 . withAttr project . vLimit 24 . hLimit 75
   . borderWithLabel (txt "Today's TODOs") . padAll 1
   . viewport "todos" Vertical . drawTodoCursor
 
@@ -36,6 +36,6 @@ drawTodo selected file@Task{} =
         _           -> id
   in
       if selected
-      then doneStyle True . withAttr selectedEntry . txt $ name file
-      else doneStyle False . withAttr entry . txt $ name file
+      then doneStyle True . withAttr selectedProject . txt $ name file
+      else doneStyle False . withAttr project . txt $ name file
 drawTodo _ _ = emptyWidget

@@ -31,7 +31,7 @@ data ViewBindings =
   ViewBindings { browserNormalBindings :: Bindings
                , browserInsertBindings :: Bindings
                , browserFolderCreateBindings :: Bindings
-               , browserEntryCreateBindings :: Bindings
+               , browserProjectCreateBindings :: Bindings
                , browserTaskCreateBindings :: Bindings
                , browserDeleteBindings :: Bindings
                , browserPriorityBindings :: Bindings

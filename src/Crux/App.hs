@@ -51,7 +51,7 @@ handleKey CruxConfig{..} s@CruxState{..} e = case eventToBinding e of
         BrowserInsert{}  -> getAction browserInsertBindings a
         BrowserCommand c -> case c of
           BCFolderCreate -> getAction browserFolderCreateBindings a
-          BCEntryCreate -> getAction browserEntryCreateBindings a
+          BCProjectCreate -> getAction browserProjectCreateBindings a
           BCPriority -> getAction browserPriorityBindings a
           BCTaskCreate -> getAction browserTaskCreateBindings a
           BCDelete -> getAction browserDeleteBindings a

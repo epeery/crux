@@ -69,10 +69,10 @@ defaultConfig =
                               , browserFolderCreateBindings =
                                   M.fromList [ (BAll, browserNormalMode)
                                              , (BChar 'f', newFolder)
-                                             , (BChar 'e', newEntry) ]
-                              , browserEntryCreateBindings =
+                                             , (BChar 'p', newProject) ]
+                              , browserProjectCreateBindings =
                                   M.fromList [ (BAll, browserNormalMode)
-                                             , (BChar 'e', newTask) ]
+                                             , (BChar 't', newTask) ]
                               , browserDeleteBindings =
                                   M.fromList [ (BAll, browserNormalMode)
                                              , (BChar 'D', browserDelete) ]
@@ -90,7 +90,7 @@ defaultConfig =
                                              , (BChar '9', priority9) ]
                               , browserTaskCreateBindings =
                                   M.fromList [ (BAll, browserNormalMode)
-                                             , (BChar 'e', newNote) ]
+                                             , (BChar 'n', newNote) ]
                               , browserInsertBindings =
                                   M.fromList [ (BAll, browserInsertAppend)
                                              , ( BKey "Escape"

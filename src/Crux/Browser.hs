@@ -14,7 +14,7 @@ data BrowserMode = BrowserNormal
   deriving ( Show, Eq )
 
 data BInsert = BIFolder
-             | BIEntry
+             | BIProject
              | BITask
              | BINote
              | BIRename
@@ -23,7 +23,7 @@ data BInsert = BIFolder
 
 data BCommand = BCTask
               | BCFolderCreate
-              | BCEntryCreate
+              | BCProjectCreate
               | BCTaskCreate
               | BCDelete
               | BCPriority

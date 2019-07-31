@@ -88,10 +88,10 @@ newFolder = Action { actionName = "New folder"
                    , actionDesc = "Create a new folder"
                    , actionFunc = folderInsert }
 
-newEntry :: Action
-newEntry = Action { actionName = "New entry"
-                  , actionDesc = "Create a new entry "
-                  , actionFunc = modifyBrowserMode (BrowserInsert BIEntry "") }
+newProject :: Action
+newProject = Action { actionName = "New project"
+                  , actionDesc = "Create a new project "
+                  , actionFunc = modifyBrowserMode (BrowserInsert BIProject"") }
 
 newTask :: Action
 newTask = Action { actionName = "New Task"
@@ -309,7 +309,7 @@ handleInsertEnter f = do
   date <- liftIO getCurrentTime
   let file = case f of
         BrowserInsert BIFolder t -> Just $ emptyFolder t
-        BrowserInsert BIEntry t -> Just $ emptyEntry t
+        BrowserInsert BIProject t -> Just $ emptyProject t
         BrowserInsert BITask t -> Just $ emptyTask t
         BrowserInsert BINote t -> Just $ emptyNote t date
         _ -> Nothing
@@ -368,7 +368,7 @@ selectCreateMode = do
       file = fsCurrent browserCursor
   case file of
     Folder{..} -> modifyBrowserMode (BrowserCommand BCFolderCreate)
-    Entry{..}  -> modifyBrowserMode (BrowserCommand BCEntryCreate)
+    Project{..}  -> modifyBrowserMode (BrowserCommand BCProjectCreate)
     Task{..}   -> modifyBrowserMode (BrowserCommand BCTaskCreate)
     _          -> pure ()
 
@@ -378,5 +378,5 @@ selectTaskMode = do
   let BrowserState{..} = cruxBrowserState
       file = fsCurrent browserCursor
   case file of
-    Entry{..} -> modifyBrowserMode (BrowserCommand BCTask)
+    Project{..} -> modifyBrowserMode (BrowserCommand BCTask)
     _         -> pure ()

@@ -7,7 +7,7 @@ module Crux.FS
   , Session(..)
   , Stack(..)
   , TaskStatus(..)
-  , emptyEntry
+  , emptyProject
   , emptyFolder
   , emptyFS
   , emptyStack
@@ -77,13 +77,13 @@ data Stack = Stack { stackPrev    :: [File]
   deriving ( Show, Read, Eq, Generic )
 
 --
--- A File is either an Empty file, an Entry, or a Folder containing a stack.
+-- A File is either an Empty file, an Project, or a Folder containing a stack.
 --
 data File =
     Empty
-  | Entry { name     :: Text
-          , contents :: Stack
-          , priority :: Int }
+  | Project { name     :: Text
+            , contents :: Stack
+            , priority :: Int }
   | Folder { name     :: Text
            , contents :: Stack
            , priority :: Int }
@@ -356,8 +356,8 @@ fileSearch' n container = case stackCurrent $ contents container of
 emptyStack :: Stack
 emptyStack = Stack [] Empty []
 
-emptyEntry :: Text -> File
-emptyEntry n = Entry n emptyStack 0
+emptyProject :: Text -> File
+emptyProject n = Project n emptyStack 0
 
 emptyFolder :: Text -> File
 emptyFolder n = Folder n emptyStack 0
