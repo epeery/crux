@@ -9,7 +9,6 @@ module Crux.Data.Types ( CruxFile(..) ) where
 import           Crux.FS
 
 import           Data.Aeson
-import           Data.Text    ( Text )
 import qualified Data.Vector  as Vector
 
 import           GHC.Generics ( Generic )
