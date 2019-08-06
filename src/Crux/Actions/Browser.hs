@@ -3,12 +3,12 @@
 
 module Crux.Actions.Browser where
 
-import           Crux.Actions.Utils
+import           Crux.Actions.Utils hiding ( fromMaybe )
 import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 
-import qualified Data.Maybe         as M
+import           Data.Maybe
 import qualified Data.Text          as T
 import           Data.Text          ( Text )
 import           Data.Time
@@ -253,11 +253,11 @@ toggleTaskTODO =
                  Task{todoDate = Nothing} -> do
                    modify (\st ->
                            st { cruxTodos =
-                                  case (insertFile ((stackCurrent . contents $
-                                                     fsCurrent fs) { path = Just $ getFSPath fs })
-                                                   (cruxTodos st)) of
-                                    Nothing -> cruxTodos st
-                                    Just a  -> a })
+                                  fromMaybe (cruxTodos st)
+                                            (insertFile ((stackCurrent
+                                                          . contents $
+                                                          fsCurrent fs) { path = Just $ getFSPath fs })
+                                                        (cruxTodos st)) })
                    modifyBrowserCursor $ taskSetTODO now
                  Task{todoDate = Just _} -> do
                    modify (\st ->
