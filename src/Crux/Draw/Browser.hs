@@ -3,23 +3,25 @@
 
 module Crux.Draw.Browser ( renderBrowser ) where
 
-import           Brick.Types          as B
-import           Brick.Widgets.Border as B
-import           Brick.Widgets.Core   as B
+import           Brick.Types           as B
+import           Brick.Widgets.Border  as B
+import           Brick.Widgets.Core    as B
 
-import           Crux.Bindings        ()
+import           Crux.Bindings         ()
 import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 import           Crux.Style
 
-import qualified Data.Map.Strict      as M
-import qualified Data.Text            as T
-import           Data.Text            ( Text )
+import qualified Data.Map.Strict       as M
+import qualified Data.Text             as T
+import           Data.Text             ( Text )
+import           Data.Time
+import           Data.Time.Clock.POSIX
 
 renderBrowser :: CruxConfig -> BrowserState -> Widget ResourceName
-renderBrowser conf BrowserState{..} =
-  drawBrowser browserCursor <=> drawMenu conf browserMode
+renderBrowser conf BrowserState{..} = drawBrowser browserCursor
+  <=> drawMenu conf browserMode <=> drawFooter (fsCurrent browserCursor)
 
 drawBrowser :: FS -> Widget ResourceName
 drawBrowser fs = padLeftRight 1 $ current <+> pad next
@@ -127,3 +129,12 @@ drawInsertInput mode = withAttr folder (txt modeText)
           BrowserInsert BIRename t -> "Rename: " `T.append` t `T.append` "|"
           BrowserInsert BISearch t -> "/" `T.append` t `T.append` "|"
           _ -> ""
+
+drawFooter :: File -> Widget ResourceName
+drawFooter file = case stackCurrent $ contents file of
+  current@Task{} ->
+    txt ("Total time: " `T.append` case calculateTime current of
+           Nothing -> "0"
+           Just t  -> T.pack $ formatTime defaultTimeLocale "%H:%M:%S" $
+             posixSecondsToUTCTime t)
+  _ -> emptyWidget
