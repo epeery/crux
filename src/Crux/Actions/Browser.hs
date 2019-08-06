@@ -40,8 +40,8 @@ todoOpen = Action { actionName = "Open TODO item"
                       p <- stackCurrent . contents . cruxTodos <$> get
                       case p of
                         Task{} -> case path p of
-                          Nothing    -> liftIO $ print "Nothing."
                           Just path' -> modifyBrowserCursor (goToFSPath path')
+                          Nothing    -> pure ()
                         _      -> pure ()
                       modifyActiveView Browser }
 
