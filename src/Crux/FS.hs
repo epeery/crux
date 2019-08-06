@@ -7,6 +7,7 @@ module Crux.FS
   , Session(..)
   , Stack(..)
   , TaskStatus(..)
+  , calculateTime
   , emptyProject
   , emptyFolder
   , emptyFS
@@ -398,3 +399,14 @@ emptyNote :: Text -> UTCTime -> File
 emptyNote n date = Note { name     = n
                         , noteDate = date
                         , priority = 0 }
+
+calculateTime :: File -> Maybe NominalDiffTime
+calculateTime file = case file of
+  Task{} -> Just $
+    foldr (\session acc -> let diff = diffUTCTime (sessionEndDate session)
+                                                  (sessionStartDate session)
+                           in
+                               diff + acc)
+          0
+          (sessions file)
+  _      -> Nothing
