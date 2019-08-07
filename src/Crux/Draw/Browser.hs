@@ -72,9 +72,12 @@ drawPath _ file = case file of
     let todoStyle = case todoDate of
           Nothing -> unselectedStyle task
           Just _  -> unselectedStyle todo . ("٭ " `T.append`)
+        doneStyle = case status of
+          Just Done{} -> forceAttr doneTodo
+          _           -> id
     in
-        todoStyle (taskStatusText status `T.append` showPriority priority
-                   `T.append` name)
+        doneStyle $ todoStyle (taskStatusText status
+                               `T.append` showPriority priority `T.append` name)
   Note{..}    -> unselectedStyle note name
   where unselectedStyle s n = withAttr s . txt $ normalizeText n
 
