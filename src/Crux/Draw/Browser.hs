@@ -131,10 +131,7 @@ drawInsertInput mode = withAttr folder (txt modeText)
           _ -> ""
 
 drawFooter :: File -> Widget ResourceName
-drawFooter file = case stackCurrent $ contents file of
-  current@Task{} ->
-    txt ("Total time: " `T.append` case calculateTime current of
-           Nothing -> "0"
-           Just t  -> T.pack $ formatTime defaultTimeLocale "%H:%M:%S" $
-             posixSecondsToUTCTime t)
-  _ -> emptyWidget
+drawFooter file = case calculateTime . stackCurrent $ contents file of
+  Nothing -> emptyWidget
+  Just t  -> txt . ("Total time: " `T.append`) $ T.pack $
+    formatTime defaultTimeLocale "%H:%M:%S" $ posixSecondsToUTCTime t
