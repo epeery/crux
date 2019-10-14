@@ -7,7 +7,7 @@ import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
 
-import           Data.Maybe (fromMaybe)
+import           Data.Maybe         ( fromMaybe )
 
 quit :: Action
 quit = Action { actionName = "Quit"
@@ -34,7 +34,9 @@ showTODOList =
                                        Just path' -> case goToFSPath path' fs of
                                          Nothing         -> acc
                                          Just (FS dir _) ->
-                                           fromMaybe acc (insertFile ((stackCurrent $ contents dir) { path = Just path' }) acc)
+                                           fromMaybe acc
+                                                     (insertFile ((stackCurrent $ contents dir) { path = Just path' })
+                                                                 acc)
                                      _      -> acc)
                                   (emptyFolder "todo")
                                   (stackToList . contents $ cruxTodos st) })
