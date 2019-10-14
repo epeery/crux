@@ -2,10 +2,12 @@
 
 module Crux.Actions where
 
-import           Crux.Actions.Utils
+import           Crux.Actions.Utils hiding ( fromMaybe )
 import           Crux.Browser
 import           Crux.Core
 import           Crux.FS
+
+import           Data.Maybe (fromMaybe)
 
 quit :: Action
 quit = Action { actionName = "Quit"
@@ -32,11 +34,7 @@ showTODOList =
                                        Just path' -> case goToFSPath path' fs of
                                          Nothing         -> acc
                                          Just (FS dir _) ->
-                                           case insertFile ((stackCurrent $
-                                                             contents dir) { path = Just path' })
-                                                           acc of
-                                             Nothing -> acc
-                                             Just a  -> a
+                                           fromMaybe acc (insertFile ((stackCurrent $ contents dir) { path = Just path' }) acc)
                                      _      -> acc)
                                   (emptyFolder "todo")
                                   (stackToList . contents $ cruxTodos st) })
